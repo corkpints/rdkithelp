@@ -11,20 +11,9 @@ def draw_molecule(smiles):
 
 def main():
     st.title('SMILES to Molecule Image Converter')
-    
-    # Input field for SMILES string
     smiles_input = st.text_input("Enter SMILES string:")
-    
-    # Generate molecule image
-    if st.button("Generate Molecule Image"):
-        if smiles_input.strip() != "":
-            molecule_image = draw_molecule(smiles_input)
-            if molecule_image is not None:
-                st.image(molecule_image, caption='Molecule', use_column_width=True)
-            else:
-                st.error("Invalid SMILES string. Please enter a valid SMILES string.")
-        else:
-            st.warning("Please enter a SMILES string.")
+    df = pd.read_csv("for_app.csv")
+    st.dataframe(df) 
 
 if __name__ == "__main__":
     main()
