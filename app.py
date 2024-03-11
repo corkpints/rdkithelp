@@ -11,6 +11,28 @@ def draw_molecule(smiles):
         return None
 
 def main():
+      # Custom CSS
+    st.markdown(
+        f"""
+        <style>
+            .reportview-container .main .block-container{{
+                max-width: 900px;
+                padding-top: 2rem;
+                padding-right: 2rem;
+                padding-left: 2rem;
+                padding-bottom: 2rem;
+            }}
+            .css-1aumxhk{{
+                background-color: #FF3399;
+            }}
+            .css-9ck3ik{{
+                color: #203864;
+            }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    
     st.title('SMILES to Molecule Image Converter')
     smiles_input = st.text_input("Enter SMILES string:")
     df = pd.read_csv("for_app.csv")
