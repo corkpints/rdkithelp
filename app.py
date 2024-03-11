@@ -20,7 +20,7 @@ def main():
     df = pd.read_csv("for_app.csv", index_col=0)
     
     if smiles_input.strip() != "":
-        df['Similarity'] = df['SMILES'].apply(lambda x: calculate_similarity(smiles_input, x))
+        df['Similarity'] = df['Parent compound SMILES'].apply(lambda x: calculate_similarity(smiles_input, x))
         df = df.sort_values(by='Similarity', ascending=False)
         # Display top ten molecules and their similarities
         st.write("Top 10 Similar Molecules:")
