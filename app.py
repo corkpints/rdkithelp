@@ -1,42 +1,32 @@
 import streamlit as st
 from rdkit import Chem
-from rdkit.Chem import Draw
+from rdkit.Chem import MACCSkeys
+from rdkit import DataStructs
 import pandas as pd 
 
-def draw_molecule(smiles):
+def calculate_similarity(input_smiles, smiles):
+    input_mol = Chem.MolFromSmiles(input_smiles)
     mol = Chem.MolFromSmiles(smiles)
-    if mol is not None:
-        return Draw.MolToImage(mol)
-    else:
+    if input_mol is None or mol is None:
         return None
+    fp1 = MACCSkeys.GenMACCSKeys(input_mol)
+    fp2 = MACCSkeys.GenMACCSKeys(mol)
+    similarity = DataStructs.TanimotoSimilarity(fp1, fp2)
+    return similarity
 
 def main():
-      # Custom CSS
-    st.markdown(
-        f"""
-        <style>
-            .reportview-container .main .block-container{{
-                max-width: 900px;
-                padding-top: 2rem;
-                padding-right: 2rem;
-                padding-left: 2rem;
-                padding-bottom: 2rem;
-            }}
-            .css-1aumxhk{{
-                background-color: #FF3399;
-            }}
-            .css-9ck3ik{{
-                color: #203864;
-            }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-    
     st.title('SMILES to Molecule Image Converter')
     smiles_input = st.text_input("Enter SMILES string:")
-    df = pd.read_csv("for_app.csv")
-    st.dataframe(df) 
+    df = pd.read_csv("for_app.csv", index_col=0)
+    
+    if smiles_input.strip() != "":
+        df['Similarity'] = df['SMILES'].apply(lambda x: calculate_similarity(smiles_input, x))
+        df = df.sort_values(by='Similarity', ascending=False)
+        # Display top ten molecules and their similarities
+        st.write("Top 10 Similar Molecules:")
+        st.dataframe(df.head(10))
+    else:
+        st.warning("Please enter a SMILES string.")
 
 if __name__ == "__main__":
     main()
