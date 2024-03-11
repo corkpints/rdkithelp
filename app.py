@@ -13,7 +13,16 @@ def calculate_similarity(input_smiles, smiles):
     fp2 = MACCSkeys.GenMACCSKeys(mol)
     similarity = DataStructs.TanimotoSimilarity(fp1, fp2)
     return similarity
-
+    
+def colorize_similarity(similarity):
+    if similarity is None:
+        return ''
+    elif similarity >= 0.5:
+        # Green shade for high similarity
+        return f'background-color: rgb({int(255 - 255 * similarity)}, 255, {int(255 - 255 * similarity)})'
+    else:
+        # Red shade for low similarity
+        return f'background-color: rgb(255, {int(255 * similarity)}, {int(255 * similarity)})'
 def main():
     st.title('SMILES to Molecule Image Converter')
     smiles_input = st.text_input("Enter SMILES string:")
@@ -22,6 +31,7 @@ def main():
     if smiles_input.strip() != "":
         df['Similarity'] = df['Parent compound SMILES'].apply(lambda x: calculate_similarity(smiles_input, x))
         df = df.sort_values(by='Similarity', ascending=False)
+        styled_df = df.style.applymap(colorize_similarity, subset=['Similarity'])
         # Display top ten molecules and their similarities
         st.write("Top 10 Similar Molecules:")
         st.dataframe(df.head(10))
