@@ -1,6 +1,7 @@
 import streamlit as st
 from rdkit import Chem
 from rdkit.Chem import Draw
+import pandas as pd 
 
 def draw_molecule(smiles):
     mol = Chem.MolFromSmiles(smiles)
