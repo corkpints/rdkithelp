@@ -34,7 +34,7 @@ def main():
         styled_df = df.style.applymap(colorize_similarity, subset=['Similarity'])
         # Display top ten molecules and their similarities
         st.write("Top 10 Similar Molecules:")
-        st.dataframe(df.head(10))
+        st.dataframe(styled_df.head(10))
     else:
         st.warning("Please enter a SMILES string.")
 
